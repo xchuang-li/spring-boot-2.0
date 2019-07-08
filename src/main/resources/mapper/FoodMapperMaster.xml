@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cay.sbt.mapper.master.FoodMapperMaster"> <!--将这个接口指向对应的实现类,在接口中引入方法，和com.attendance.mapper.VocationMapper相对应-->
+    <resultMap id="food" type="com.cay.sbt.entity.Food">
+        <id property="id" column="id"/>
+        <!-- <result property="实体类属性" column="数据表字段名"/> -->
+        <result property="name" column="name"/>
+        <result property="proTime" column="pro_time"/>
+        <result property="expDate" column="exp_date"/>
+    </resultMap>
+
+    <select id="selectFoodByDynamic" parameterType="java.util.Map" resultMap="food">
+        select * from food
+        <where>
+            <if test="id !=null">
+                id = #{id}
+            </if>
+            <if test="name !=null">
+                and name = #{name}
+            </if>
+            <if test="proTime !=null">
+                and pro_time = #{proTime}
+            </if>
+            <if test="expDate !=null">
+                and exp_date = #{expDate}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateFoodByDynamic" parameterType="java.util.Map">
+        update food
+        <set>
+            <if test="name !=null">name = #{name},</if>
+            <if test="proTime !=null">pro_time = #{proTime},</if>
+            <if test="expDate !=null">exp_date = #{expDate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectFoodByContain" resultMap="food">
+        select * from food where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
